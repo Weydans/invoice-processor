@@ -43,6 +43,12 @@ make
 ```
 
 
+- Insira dados fake na base
+```bash
+make dbseed
+```
+
+
 
 ## Acesso
 
