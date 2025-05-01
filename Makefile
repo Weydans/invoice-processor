@@ -16,6 +16,12 @@ install: down
 	docker-compose exec app composer install
 	docker-compose exec app php artisan key:generate
 
+migrate:
+	docker-compose exec app php artisan migrate
+
+test:
+	docker-compose exec app php artisan test
+
 status:
 	docker-compose ps -a
 
