@@ -19,6 +19,9 @@ install: down
 migrate:
 	docker-compose exec app php artisan migrate
 
+dbseed:
+	docker-compose exec app php artisan db:seed
+
 test:
 	docker-compose exec app php artisan test
 
