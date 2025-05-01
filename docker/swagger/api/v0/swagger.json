@@ -1,0 +1,26 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "API do sistema de gestão de faturas",
+        "description": "API do sistema de gestão de faturas",
+        "contact": {
+            "email": "weydans@hotmail.com"
+        },
+        "version": "0.1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080/api/v0/"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Invoice",
+            "description": "endpoits to manage invoices"
+        },
+        {
+            "name": "Invoice item",
+            "description": "endpoints to manage invoice items"
+        }
+    ]
+}
