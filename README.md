@@ -49,6 +49,14 @@ make
 O acesso pode ser realizado via url `http://localhost:8080/`
 
 
+## Execução dos testes
+
+- Executa testes de unidade e integração
+```bash
+make test
+```
+
+
 
 ## Parar Execução
 
