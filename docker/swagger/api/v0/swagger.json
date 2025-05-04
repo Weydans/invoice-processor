@@ -10,7 +10,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8080/api/v0/"
+            "url": "http://localhost:8080/api"
         }
     ],
     "tags": [
@@ -22,5 +22,392 @@
             "name": "Invoice item",
             "description": "endpoints to manage invoice items"
         }
-    ]
+    ],
+    "paths": {
+        "/invoice/{id}/pay": {
+            "post": {
+                "tags": ["Invoice"],
+                "summary": "Process payment for an invoice",
+                "description": "Processes a payment for a given invoice. Validates the amount and updates the invoice and related items accordingly.",
+                "operationId": "processInvoicePayment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the invoice to apply the payment to",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 50,
+                                        "description": "Amount to pay towards the invoice"
+                                    }
+                                },
+                                "required": ["amount"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Payment processed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Payment processed with success!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error (e.g., overpayment or negative amount)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "amount": [
+                                                    "The amount must be a positive number."
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request (invalid input format or malformed JSON)"
+                    }
+                }
+            }
+        },
+        "/invoices": {
+            "get": {
+                "summary": "List invoices",
+                "description": "Returns a paginated list of invoices.",
+                "operationId": "listInvoices",
+                "tags": ["Invoice"],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination (default is 1)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page (max 100)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "example": 20
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A paginated list of invoices"
+                    }
+                }
+            }
+        },
+        "/invoice": {
+            "post": {
+                "summary": "Create a new invoice",
+                "description": "Creates a new invoice with one or more items.",
+                "operationId": "createInvoice",
+                "tags": ["Invoice"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "items": {
+                                        "type": "array",
+                                        "minItems": 1,
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Service charge"
+                                                },
+                                                "value": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "minimum": 0.01,
+                                                    "example": 100.5
+                                                }
+                                            },
+                                            "required": ["description", "value"]
+                                        }
+                                    }
+                                },
+                                "required": ["items"]
+                            },
+                            "examples": {
+                                "invoice": {
+                                    "summary": "Sample invoice",
+                                    "value": {
+                                        "items": [
+                                            {
+                                                "description": "Consulting service",
+                                                "value": 150.0
+                                            },
+                                            {
+                                                "description": "Software license",
+                                                "value": 300.0
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Invoice created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/invoice/{id}": {
+            "get": {
+                "summary": "Get invoice details",
+                "description": "Retrieves the details of a specific invoice by its ID.",
+                "operationId": "showInvoice",
+                "tags": ["Invoice"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the invoice",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 123
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invoice details returned successfully"
+                    },
+                    "404": {
+                        "description": "Invoice not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Invoice"],
+                "summary": "Delete an invoice by ID",
+                "description": "Deletes an invoice and its associated items if the invoice status is not 'PAID'.",
+                "operationId": "deleteInvoice",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the invoice to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 123
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Invoice successfully deleted"
+                    },
+                    "403": {
+                        "description": "Paid invoices cannot be deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Paid invoices cannot be deleted."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invoice not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invoice not found."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to delete invoice. Call the support."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/invoice-item": {
+            "post": {
+                "summary": "Create a new invoice item",
+                "description": "Adds a new item to an existing invoice.",
+                "operationId": "createInvoiceItem",
+                "tags": ["Invoice item"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "invoice_id": {
+                                        "type": "integer",
+                                        "example": 42,
+                                        "description": "ID of the related invoice"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Extra design service"
+                                    },
+                                    "value": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "minimum": 0.0,
+                                        "example": 250.0
+                                    },
+                                    "percentage_paid": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "minimum": 0.0,
+                                        "maximum": 100.0,
+                                        "example": 50.0
+                                    }
+                                },
+                                "required": [
+                                    "invoice_id",
+                                    "description",
+                                    "value",
+                                    "percentage_paid"
+                                ]
+                            },
+                            "examples": {
+                                "invoiceItem": {
+                                    "summary": "Sample invoice item",
+                                    "value": {
+                                        "invoice_id": 42,
+                                        "description": "Logo update",
+                                        "value": 150.0,
+                                        "percentage_paid": 25.0
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Invoice item created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/invoice-item/{id}": {
+            "delete": {
+                "summary": "Delete an invoice item",
+                "description": "Deletes a specific invoice item by its ID.",
+                "operationId": "deleteInvoiceItem",
+                "tags": ["Invoice item"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the invoice item to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Invoice item deleted successfully"
+                    },
+                    "404": {
+                        "description": "Invoice item not found"
+                    },
+                    "422": {
+                        "description": "Invalid request parameters"
+                    }
+                }
+            }
+        }
+    }
 }
