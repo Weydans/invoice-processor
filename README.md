@@ -3,6 +3,17 @@
 Sistema desenvolvido em Laravel utilizando as principais funcionalidades do framework.
 
 
+## Observações do projeto
+
+- Toda configuração de infra realizada com Docker
+- Documentação de endpoints com Swagger
+- Utilização de arquivo Makefile para facilitar o desenvolvimento e implantação
+- Testes automatizados cobrindo quase todas as classes do projeto
+- Classes no padrão Single Action Class. Coesas, testáveis e de fácil manutenção
+- Infelizmente tive contratempos e não pude terminar o frontend completamente no tempo
+- Acreadito ter feito um bom trabalho e desejo uma boa avaliação
+
+
 
 ## Dependências
 
