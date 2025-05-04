@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class InvoiceStatusTest extends TestCase
 {
-    public function testEnumValues(): void
+    public function test_enum_values(): void
     {
         $this->assertEquals(InvoiceStatus::PENDING->value, 1);
         $this->assertEquals(InvoiceStatus::PARTIALLY_PAID->value, 2);
