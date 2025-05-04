@@ -2,6 +2,8 @@
 
 Sistema desenvolvido em Laravel utilizando as principais funcionalidades do framework.
 
+![Alt text](https://raw.githubusercontent.com/Weydans/invoice-processor/refs/heads/main/public/capa.png)
+
 
 ## Observações do projeto
 
