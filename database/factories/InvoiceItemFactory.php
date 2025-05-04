@@ -14,8 +14,8 @@ class InvoiceItemFactory extends Factory
         return [
             'invoice_id' => Invoice::inRandomOrder()->first()->id,
             'description' => $this->faker->sentence(),
-            'value' => $this->faker->randomFloat(2, 0.01, 999999.99),
-            'percentage_paid' => $this->faker->randomFloat(2, 0.01, 100.00),
+            'value' => $this->faker->randomFloat(2, 0.01, 999.99),
+            'percentage_paid' => $this->faker->randomFloat(2, 0.00, 100.00),
         ];
     }
 }

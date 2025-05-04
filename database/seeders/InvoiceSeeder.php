@@ -9,6 +9,6 @@ class InvoiceSeeder extends Seeder
 {
     public function run(): void
     {
-        Invoice::factory(fake()->numberBetween(10, 99))->create();
+        Invoice::factory(fake()->numberBetween(1, 5))->create();
     }
 }
