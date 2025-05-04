@@ -66,7 +66,7 @@ async function fetchInvoices() {
                             <td>${invoice.number}</td>
                             <td>${formattedDate}</td>
                             <td>R$ ${
-                                invoice.amount_paid.replace(".", ",") || ""
+                                `${invoice.amount_paid}`.replace(".", ",") || ""
                             }</td>
                             <td>${status}</td>
                             <td>
